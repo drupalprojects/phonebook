@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\phonebook\Entity\PhoneBookContact.
+ * Contains \Drupal\phonebook\Entity\PhoneBookPhone.
  */
 
 namespace Drupal\phonebook\Entity;
@@ -11,43 +11,43 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\phonebook\PhoneBookContactInterface;
+use Drupal\phonebook\PhoneBookPhoneInterface;
 
 /**
- * Defines a Phone Book Contact entity class.
+ * Defines a Phone Book Phone entity class.
  *
  * @ContentEntityType(
- *   id = "phonebook_contact",
- *   label = @Translation("Phone Book Contact"),
+ *   id = "phonebook_phone",
+ *   label = @Translation("Phone Book Phone"),
  *   handlers = {
- *     "storage" = "Drupal\phonebook\PhoneBookContactStorage",
- *     "list_builder" = "Drupal\phonebook\PhoneBookContactListBuilder",
- *     "views_data" = "Drupal\phonebook\PhoneBookContactViewsData",
+ *     "storage" = "Drupal\phonebook\PhoneBookPhoneStorage",
+ *     "list_builder" = "Drupal\phonebook\PhoneBookPhoneListBuilder",
+ *     "views_data" = "Drupal\phonebook\PhoneBookPhoneViewsData",
  *     "form" = {
- *       "default" = "Drupal\phonebook\PhoneBookContactForm",
- *       "add" = "Drupal\phonebook\PhoneBookContactForm",
- *       "edit" = "Drupal\phonebook\PhoneBookContactForm",
- *       "delete" = "Drupal\phonebook\Form\PhoneBookContactDeleteForm"
+ *       "default" = "Drupal\phonebook\PhoneBookPhoneForm",
+ *       "add" = "Drupal\phonebook\PhoneBookPhoneForm",
+ *       "edit" = "Drupal\phonebook\PhoneBookPhoneForm",
+ *       "delete" = "Drupal\phonebook\Form\PhoneBookPhoneDeleteForm"
  *     }
  *   },
- *   base_table = "phonebook_contact",
+ *   base_table = "phonebook_phone",
  *   translatable = FALSE,
- *   admin_permission = "administer phone book contact",
+ *   admin_permission = "administer phone book phone",
  *   entity_keys = {
  *     "id" = "id",
  *     "uuid" = "uuid",
  *     "label" = "phone",
  *     "langcode" = "langcode",
  *   },
- *   field_ui_base_route = "entity.phonebook_contact.collection",
+ *   field_ui_base_route = "entity.phonebook_phone.collection",
  *   links = {
- *     "canonical" = "/phonebook/contact/{phonebook_contact}",
- *     "delete-form" = "/phonebook/contact/{phonebook_contact}/delete",
- *     "edit-form" = "/phonebook/contact/{phonebook_contact}/edit"
+ *     "canonical" = "/phonebook/phone/{phonebook_phone}",
+ *     "delete-form" = "/phonebook/phone/{phonebook_phone}/delete",
+ *     "edit-form" = "/phonebook/phone/{phonebook_phone}/edit"
  *   }
  * )
  */
-class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInterface {
+class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterface {
 
   use EntityChangedTrait;
 
@@ -64,18 +64,18 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('ID'))
-      ->setDescription(t('The ID of the phone book contact.'))
+      ->setDescription(t('The ID of the phone book phone.'))
       ->setReadOnly(TRUE)
       ->setSetting('unsigned', TRUE);
 
     $fields['uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the phone book contact.'))
+      ->setDescription(t('The UUID of the phone book phone.'))
       ->setReadOnly(TRUE);
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language'))
-      ->setDescription(t('The language code of the phone book contact.'))
+      ->setDescription(t('The language code of the phone book phone.'))
       ->setDisplayOptions('view', array(
         'type' => 'hidden',
       ))
@@ -86,11 +86,11 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
-      ->setDescription(t('The time that the phone book contact was created.'));
+      ->setDescription(t('The time that the phone book phone was created.'));
 
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
-      ->setDescription(t('The time that the phone book contact was last edited.'));
+      ->setDescription(t('The time that the phone book phone was last edited.'));
 
     $fields['phone'] = BaseFieldDefinition::create('telephone')
       ->setLabel(t('Phone number'))
@@ -119,7 +119,7 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
 
     $fields['source'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Source'))
-      ->setDescription(t('The phone book contact source.'))
+      ->setDescription(t('The phone book phone source.'))
       ->setRequired(FALSE)
       ->setSetting('max_length', 32)
       ->setDisplayOptions('view', array(
@@ -141,16 +141,16 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
     // @todo fix this with valid form and display options!
     $fields['delta'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Delta'))
-      ->setDescription(t('The phone book contact delta in this source.'))
+      ->setDescription(t('The phone book phone delta in this source.'))
       ->setRequired(TRUE)
       ->setDefaultValue(0);
 
     $fields['type'] = BaseFieldDefinition::create('list_integer')
       ->setLabel(t('Contact type'))
-      ->setDescription(t('The phone book contact type.'))
+      ->setDescription(t('The phone book phone type.'))
       ->setRequired(TRUE)
       ->setDefaultValue(self::TYPE_UNDEFINED)
-      ->setSetting('allowed_values', static::getPhoneBookContactTypes())
+      ->setSetting('allowed_values', static::getPhoneBookPhoneTypes())
       ->setDisplayOptions('view', array(
         'label' => 'inline',
         'type' => 'list_default',
@@ -165,8 +165,8 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
 
     // @todo fix this with valid form and display options!
     $fields['status'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Phone book contact status'))
-      ->setDescription(t('Whether the phone book contact is active or blocked.'))
+      ->setLabel(t('Phone book phone status'))
+      ->setDescription(t('Whether the phone book phone is active or blocked.'))
       ->setDefaultValue(FALSE);
 
 
@@ -179,7 +179,7 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
   /**
    * {@inheritdoc}
    */
-  public static function getPhoneBookContactTypes() {
+  public static function getTypes() {
     return [
       static::TYPE_UNDEFINED => t('Undefined'),
       static::TYPE_INDIVIDUAL => t('Individual'),
@@ -197,7 +197,7 @@ class PhoneBookContact extends ContentEntityBase implements PhoneBookContactInte
   /**
    * {@inheritdoc}
    */
-  public function isBlocked() {
+  public function isInactive() {
     return $this->get('status')->value == 0;
   }
 
