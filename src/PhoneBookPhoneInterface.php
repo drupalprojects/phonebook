@@ -23,29 +23,6 @@ interface PhoneBookPhoneInterface extends ContentEntityInterface, EntityChangedI
   const STATUS_ACTIVE = 1;
 
   /**
-   * Indicates the phone book contact type is undefined.
-   */
-  const TYPE_UNDEFINED = 0;
-
-  /**
-   * Indicates the phone book contact type is individual.
-   */
-  const TYPE_INDIVIDUAL = 1;
-
-  /**
-   * Indicates the phone book contact type is legal entity.
-   */
-  const TYPE_LEGAL_ENTITY = 2;
-
-  /**
-   * Return array of phone book phone possible types.
-   *
-   * @return array
-   *   An array of phone book contact types.
-   */
-  public static function getTypes();
-
-  /**
    * Returns TRUE if the phone book phone is active.
    *
    * @return bool

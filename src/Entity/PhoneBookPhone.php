@@ -21,6 +21,7 @@ use Drupal\phonebook\PhoneBookPhoneInterface;
  *   label = @Translation("Phone Book Phone"),
  *   handlers = {
  *     "storage" = "Drupal\phonebook\PhoneBookPhoneStorage",
+ *     "storage_schema" = "Drupal\phonebook\PhoneBookPhoneStorageSchema",
  *     "list_builder" = "Drupal\phonebook\PhoneBookPhoneListBuilder",
  *     "views_data" = "Drupal\phonebook\PhoneBookPhoneViewsData",
  *     "form" = {
@@ -68,21 +69,23 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
       ->setReadOnly(TRUE)
       ->setSetting('unsigned', TRUE);
 
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the phone book phone.'))
-      ->setReadOnly(TRUE);
-
-    $fields['langcode'] = BaseFieldDefinition::create('language')
-      ->setLabel(t('Language'))
-      ->setDescription(t('The language code of the phone book phone.'))
-      ->setDisplayOptions('view', array(
-        'type' => 'hidden',
-      ))
-      ->setDisplayOptions('form', array(
-        'type' => 'language_select',
-        'weight' => 2,
-      ));
+    // @todo add constraints!
+    $fields['phone'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Phone number in E.164 format'))
+      ->setDescription(t('The full phone number in E.164 (@url) format.', ['@url' => 'https://en.wikipedia.org/wiki/E.164']))
+      ->setRequired(TRUE)
+      ->setSetting('unsigned', TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'number_integer',
+      ])
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'number',
+        'settings' => array(
+          'size' => 15, // 15 chars maximum for phone number in E.164
+        ),
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
@@ -92,45 +95,39 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
       ->setLabel(t('Changed'))
       ->setDescription(t('The time that the phone book phone was last edited.'));
 
-    $fields['phone'] = BaseFieldDefinition::create('telephone')
-      ->setLabel(t('Phone number'))
-      ->setDescription(t('The full phone number.'))
-      ->setRequired(TRUE)
-      ->setDisplayOptions('view', array(
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => 1,
-      ))
+    $fields['contacted'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(t('Contacted'))
+      ->setDescription(t('The time that the phone book phone was last contacted (called, smsed, etc.)'))
+      ->setDefaultValue(0)
+      ->setDisplayOptions('view', [
+        'type' => 'timestamp',
+      ])
       ->setDisplayConfigurable('view', TRUE)
-      ->setDisplayOptions('form', array(
-        'type' => 'telephone_default',
-        'weight' => 1,
-        'settings' => array(
-          'size' => 40,
-        ),
-      ))
       ->setDisplayConfigurable('form', TRUE);
 
-    // @todo fix this with valid form and display options!
-    $fields['phone_e164'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Phone number in E.164 format'))
-      ->setDescription(t('The full phone number in E.164 (@url) format.', ['@url' => 'https://en.wikipedia.org/wiki/E.164']))
-      ->setRequired(TRUE);
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Phone book phone status'))
+      ->setDescription(t('Whether the phone book phone is active or blocked.'))
+      ->setDefaultValue(TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'boolean',
+      ])
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
-    $fields['source'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Source'))
-      ->setDescription(t('The phone book phone source.'))
-      ->setRequired(FALSE)
+    $fields['last_contact_status'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Last contact status'))
+      ->setDescription(t('The phone book phone last contact status.'))
       ->setSetting('max_length', 32)
       ->setDisplayOptions('view', array(
-        'label' => 'inline',
         'type' => 'string',
-        'weight' => 1,
       ))
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayOptions('form', array(
         'type' => 'string_textfield',
-        'weight' => 1,
         'settings' => array(
           'size' => 32,
         ),
@@ -138,53 +135,7 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
       ->setDisplayConfigurable('form', TRUE)
       ->setPropertyConstraints('value', array('Length' => array('max' => 32)));
 
-    // @todo fix this with valid form and display options!
-    $fields['delta'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Delta'))
-      ->setDescription(t('The phone book phone delta in this source.'))
-      ->setRequired(TRUE)
-      ->setDefaultValue(0);
-
-    $fields['type'] = BaseFieldDefinition::create('list_integer')
-      ->setLabel(t('Contact type'))
-      ->setDescription(t('The phone book phone type.'))
-      ->setRequired(TRUE)
-      ->setDefaultValue(self::TYPE_UNDEFINED)
-      ->setSetting('allowed_values', static::getPhoneBookPhoneTypes())
-      ->setDisplayOptions('view', array(
-        'label' => 'inline',
-        'type' => 'list_default',
-        'weight' => 5,
-      ))
-      ->setDisplayConfigurable('view', TRUE)
-      ->setDisplayOptions('form', array(
-        'type' => 'options_select',
-        'weight' => 5,
-      ))
-      ->setDisplayConfigurable('form', TRUE);
-
-    // @todo fix this with valid form and display options!
-    $fields['status'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Phone book phone status'))
-      ->setDescription(t('Whether the phone book phone is active or blocked.'))
-      ->setDefaultValue(FALSE);
-
-
-    // @todo: add fields: address, person, city, street, house, comment, rawdata
-    // @todo: add fields; fias_city_guid, fias_street_guid, fias_house_guid
-
     return $fields;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getTypes() {
-    return [
-      static::TYPE_UNDEFINED => t('Undefined'),
-      static::TYPE_INDIVIDUAL => t('Individual'),
-      static::TYPE_LEGAL_ENTITY => t('Legal entity'),
-    ];
   }
 
   /**
