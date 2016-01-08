@@ -1,0 +1,21 @@
+administer phonebook:
+  title: 'Administer Phonebook'
+  description: 'Allow to access the administration form to configure Phonebook entities and contacts.'
+  restrict access: true
+
+add phonebook phone entities:
+  title: 'Create new Phonebook Phone entities'
+
+administer phonebook phone entities:
+  title: 'Administer Phonebook Phone entities'
+  description: 'Allow to access the administration form to configure Phonebook Phone entities.'
+  restrict access: true
+
+delete phonebook phone entities:
+  title: 'Delete Phonebook Phone entities'
+
+edit phonebook phone entities:
+  title: 'Edit Phonebook Phone entities'
+
+view phonebook phone entities:
+  title: 'View Phonebook Phone entities'

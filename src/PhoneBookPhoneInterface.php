@@ -13,28 +13,28 @@ use Drupal\Core\Entity\EntityChangedInterface;
 interface PhoneBookPhoneInterface extends ContentEntityInterface, EntityChangedInterface {
 
   /**
-   * Indicates the phone book phone status is inactive.
+   * Indicates the phonebook phone status is inactive.
    */
-  const STATUS_INACTIVE = 0;
+  const STATUS_INACTIVE = FALSE;
 
   /**
-   * Indicates the phone book phone status is active.
+   * Indicates the phonebook phone status is active.
    */
-  const STATUS_ACTIVE = 1;
+  const STATUS_ACTIVE = TRUE;
 
   /**
-   * Returns TRUE if the phone book phone is active.
+   * Returns TRUE if the phonebook phone is active.
    *
    * @return bool
-   *   TRUE if the phone book phone is active, FALSE otherwise.
+   *   TRUE if the phonebook phone is active, FALSE otherwise.
    */
   public function isActive();
 
   /**
-   * Returns TRUE if the phone book phone is inactive.
+   * Returns TRUE if the phonebook phone is inactive.
    *
    * @return bool
-   *   TRUE if the phone book phone is blocked, FALSE otherwise.
+   *   TRUE if the phonebook phone is blocked, FALSE otherwise.
    */
   public function isInactive();
 

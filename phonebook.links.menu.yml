@@ -1,0 +1,13 @@
+# Phonebook Phone menu items definition
+entity.phonebook_phone.collection:
+  title: 'Phonebook Phone list'
+  route_name: entity.phonebook_phone.collection
+  description: 'List Phonebook Phone entities'
+  parent: system.admin_structure
+  weight: 100
+
+phonebook.admin.structure.settings:
+  title: Phonebook Settings
+  description: 'Configure Phonebook'
+  route_name: phonebook.settings
+  parent: system.admin_structure

@@ -1,0 +1,59 @@
+phonebook.settings:
+  path: '/admin/structure/phonebook'
+  defaults:
+    _title: 'Phonebook settings'
+  requirements:
+    _permission: 'administer phonebook'
+  options:
+    _admin_route: TRUE
+
+# PhoneBookPhone routing definition
+entity.phonebook_phone.canonical:
+  path: '/phonebook/phone/{phonebook_phone}'
+  defaults:
+    _entity_view: 'phonebook_phone'
+    _title: 'Phonebook Phone'
+  requirements:
+    _entity_access: 'phonebook_phone.view'
+  options:
+    _admin_route: TRUE
+
+entity.phonebook_phone.collection:
+  path: '/admin/structure/phonebook/phone'
+  defaults:
+    _entity_list: 'phonebook_phone'
+    _title: 'Phonebook Phone list'
+  requirements:
+    _permission: 'view phonebook phone entities'
+  options:
+    _admin_route: TRUE
+
+entity.phonebook_phone.add_form:
+  path: '/phonebook/phone/add'
+  defaults:
+    _entity_form: phonebook_phone.add
+    _title: 'Add Phonebook Phone'
+  requirements:
+    _permission: 'add phonebook phone entities'
+  options:
+    _admin_route: TRUE
+
+entity.phonebook_phone.edit_form:
+  path: '/phonebook/phone/{phonebook_phone}/edit'
+  defaults:
+    _entity_form: phonebook_phone.edit
+    _title: 'Edit Phonebook Phone'
+  requirements:
+    _permission: 'edit phonebook phone entities'
+  options:
+    _admin_route: TRUE
+
+entity.phonebook_phone.delete_form:
+  path: '/phonebook/phone/{phonebook_phone}/delete'
+  defaults:
+    _entity_form: phonebook_phone.delete
+    _title: 'Delete Phonebook Phone'
+  requirements:
+    _permission: 'delete phonebook phone entities'
+  options:
+    _admin_route: TRUE

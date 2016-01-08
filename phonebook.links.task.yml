@@ -1,0 +1,17 @@
+# Phonebook Phone routing definition
+
+entity.phonebook_phone.canonical:
+  route_name: entity.phonebook_phone.canonical
+  base_route: entity.phonebook_phone.canonical
+  title: 'View'
+
+entity.phonebook_phone.edit_form:
+  route_name: entity.phonebook_phone.edit_form
+  base_route: entity.phonebook_phone.canonical
+  title: Edit
+
+entity.phonebook_phone.delete_form:
+  route_name:  entity.phonebook_phone.delete_form
+  base_route:  entity.phonebook_phone.canonical
+  title: Delete
+  weight: 10

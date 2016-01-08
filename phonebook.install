@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the phonebook module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function phonebook_schema() {
+  $schema['phonebook_phone_extrafield'] = array(
+    'description' => 'Table that contains extrafields for phones per different phonebooks.',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Primary Key: Unique extrafield.',
+      ),
+      'phonebook_phone_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The {phonebook_phone}.id of the phonebook phone.',
+      ),
+      'phonebook' => array(
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The phonebook configuration entity id, for example "phones1" or "my_book"',
+      ),
+      'extrafield' => array(
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The extrafield name, for example "person" or "address"',
+      ),
+      'delta' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The sequence number for this extrafield, used for multi-value extrafields.',
+      ),
+      'langcode' => array(
+        'type' => 'varchar_ascii',
+        'length' => '12',
+        'not null' => TRUE,
+        'description' => 'The {languages}.langcode of the extrafield value.',
+        'default' => '',
+      ),
+      'hash' => array(
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The extrafield value hash, hash = md5(phonebook_phone_id + phonebook + extrafield + value)',
+      ),
+      'value' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+        'description' => 'The extrafield value.',
+      ),
+    ),
+    'primary key' => array('id'),
+    'unique keys' => array(
+      'phonebook_phone_id__phonebook__extrafield__delta' => array('phonebook_phone_id', 'phonebook', 'extrafield', 'delta'),
+    ),
+    'indexes' => array(
+      'hash' => array('hash'),
+    ),
+  );
+
+  return $schema;
+}

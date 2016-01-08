@@ -14,16 +14,16 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\phonebook\PhoneBookPhoneInterface;
 
 /**
- * Defines a Phone Book Phone entity class.
+ * Defines a Phonebook Phone entity class.
  *
  * @ContentEntityType(
  *   id = "phonebook_phone",
- *   label = @Translation("Phone Book Phone"),
+ *   label = @Translation("Phonebook Phone"),
  *   handlers = {
  *     "storage" = "Drupal\phonebook\PhoneBookPhoneStorage",
  *     "storage_schema" = "Drupal\phonebook\PhoneBookPhoneStorageSchema",
+ *     "access" = "Drupal\phonebook\PhoneBookPhoneAccessControlHandler",
  *     "list_builder" = "Drupal\phonebook\PhoneBookPhoneListBuilder",
- *     "views_data" = "Drupal\phonebook\PhoneBookPhoneViewsData",
  *     "form" = {
  *       "default" = "Drupal\phonebook\PhoneBookPhoneForm",
  *       "add" = "Drupal\phonebook\PhoneBookPhoneForm",
@@ -33,12 +33,11 @@ use Drupal\phonebook\PhoneBookPhoneInterface;
  *   },
  *   base_table = "phonebook_phone",
  *   translatable = FALSE,
- *   admin_permission = "administer phone book phone",
+ *   admin_permission = "administer phonebook phone entities",
  *   entity_keys = {
  *     "id" = "id",
- *     "uuid" = "uuid",
  *     "label" = "phone",
- *     "langcode" = "langcode",
+ *     "status" = "status",
  *   },
  *   field_ui_base_route = "entity.phonebook_phone.collection",
  *   links = {
@@ -65,7 +64,7 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('ID'))
-      ->setDescription(t('The ID of the phone book phone.'))
+      ->setDescription(t('The ID of the phonebook phone.'))
       ->setReadOnly(TRUE)
       ->setSetting('unsigned', TRUE);
 
@@ -75,6 +74,7 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
       ->setDescription(t('The full phone number in E.164 (@url) format.', ['@url' => 'https://en.wikipedia.org/wiki/E.164']))
       ->setRequired(TRUE)
       ->setSetting('unsigned', TRUE)
+      ->setSetting('size', 'big') // mysql maximum value is 18446744073709551615, see http://dev.mysql.com/doc/refman/5.5/en/integer-types.html
       ->setDisplayOptions('view', [
         'type' => 'number_integer',
       ])
@@ -89,15 +89,15 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
-      ->setDescription(t('The time that the phone book phone was created.'));
+      ->setDescription(t('The time that the phonebook phone was created.'));
 
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
-      ->setDescription(t('The time that the phone book phone was last edited.'));
+      ->setDescription(t('The time that the phonebook phone was last edited.'));
 
     $fields['contacted'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(t('Contacted'))
-      ->setDescription(t('The time that the phone book phone was last contacted (called, smsed, etc.)'))
+      ->setDescription(t('The time that the phonebook phone was last contacted (called, smsed, etc.)'))
       ->setDefaultValue(0)
       ->setDisplayOptions('view', [
         'type' => 'timestamp',
@@ -107,8 +107,8 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
 
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Phone book phone status'))
-      ->setDescription(t('Whether the phone book phone is active or blocked.'))
-      ->setDefaultValue(TRUE)
+      ->setDescription(t('Whether the phonebook phone is active or blocked.'))
+      ->setDefaultValue(PhoneBookPhoneInterface::STATUS_ACTIVE)
       ->setDisplayOptions('view', [
         'type' => 'boolean',
       ])
@@ -120,7 +120,7 @@ class PhoneBookPhone extends ContentEntityBase implements PhoneBookPhoneInterfac
 
     $fields['last_contact_status'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Last contact status'))
-      ->setDescription(t('The phone book phone last contact status.'))
+      ->setDescription(t('The phonebook phone last contact status.'))
       ->setSetting('max_length', 32)
       ->setDisplayOptions('view', array(
         'type' => 'string',

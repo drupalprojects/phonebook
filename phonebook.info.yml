@@ -1,9 +1,9 @@
-name: Phone Book
+name: Phonebook
 type: module
-description: 'Provide phone book and contact entity and some functionality related to it.'
+description: 'Provide phonebooks and contacts entities (like phones, emails, etc) and some functionality related to it.'
 version: VERSION
 core: 8.x
-configure: entity.phonebook_contact.collection
+configure: entity.phonebook_phone.collection
 dependencies:
   - entity_reference
   - telephone

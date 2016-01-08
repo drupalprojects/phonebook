@@ -1,0 +1,6 @@
+entity.phonebook_phone.add_form:
+  route_name: entity.phonebook_phone.add_form
+  title: 'Add Phonebook Phone'
+  appears_on:
+    - entity.phonebook_phone.collection
+    - entity.phonebook_phone.canonical
